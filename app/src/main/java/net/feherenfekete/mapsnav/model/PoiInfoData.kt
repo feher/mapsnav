@@ -1,7 +1,5 @@
 package net.feherenfekete.mapsnav.model
 
-import net.feherenfekete.mapsnav.model.ImageData
-
 data class PoiInfoData(
     val pageId: Long = -1,
     val title: String = "",
