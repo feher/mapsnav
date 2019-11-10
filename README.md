@@ -1,4 +1,4 @@
-# mapsnav
+# mapsnav (aka Wikimap)
 
 Android app that shows Wikipedia articles near you on a map.
 
