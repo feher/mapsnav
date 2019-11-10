@@ -4,9 +4,10 @@ import io.reactivex.Single
 import net.feherenfekete.mapsnav.model.ImageData
 import net.feherenfekete.mapsnav.model.LatLongData
 import net.feherenfekete.mapsnav.model.PoiData
-import net.feherenfekete.mapsnav.repository.poi.PoiDataSource
 import net.feherenfekete.mapsnav.model.PoiInfoData
+import net.feherenfekete.mapsnav.repository.poi.PoiDataSource
 import net.feherenfekete.mapsnav.rx.RxSchedulers
+import java.util.*
 import javax.inject.Inject
 
 class WikiPoiDatasource @Inject constructor(
@@ -71,7 +72,8 @@ class WikiPoiDatasource @Inject constructor(
         pageMap: Map<Long, ImageInfoResponse.PageResponse>
     ): List<ImageData> {
         val nonSvg = pageMap.values.filter {
-            !it.imageInfo[0].url.endsWith(".svg")
+            val lowercaseUrl = it.imageInfo[0].url.toLowerCase(Locale.US)
+            !lowercaseUrl.endsWith(".svg") && !lowercaseUrl.endsWith(".png")
         }
         return nonSvg.map {
             ImageData(it.imageInfo[0].url)
