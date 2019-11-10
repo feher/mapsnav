@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Wikimap</string>
+
+    <string name="wikipedia_link">Wikipedia</string>
+    <string name="travel_mode">Mode</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="distance">Distance</string>
+    <string name="duration">Duration</string>
+
+</resources>
