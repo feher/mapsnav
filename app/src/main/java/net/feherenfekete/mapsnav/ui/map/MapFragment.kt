@@ -256,7 +256,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 viewModel.openUrl(it, poiInfo.url)
             }
         }
-        poiImageAdapter.setItems(poiInfo.images.map { it.url })
+        if (poiInfo.images.isNotEmpty()) {
+            poiImagesRecyclerView.visibility = View.VISIBLE
+            poiImageAdapter.setItems(poiInfo.images.map { it.url })
+        } else {
+            poiImagesRecyclerView.visibility = View.GONE
+        }
 
         if (event is MapViewModel.PoiSelectedEvent) {
             showBottomSheet()
