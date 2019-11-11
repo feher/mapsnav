@@ -17,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -101,18 +102,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         googMap.getUiSettings().setMapToolbarEnabled(false);
 
         googMap.setOnMapClickListener {
-            toggleBottomSheet()
-
-            // HACK: This is needed because GoogleMaps removes marker windows when tapping.
-            updateUi(MapViewModel.Event())
+            onMapClicked()
         }
 
         googMap.setOnCameraIdleListener {
-            setViewLocation()
+            onMapCameraIdle()
         }
 
         googMap.setOnMarkerClickListener {
-            viewModel.selectPoi(it.position.asLatLongData())
+            onMapMarkerClicked(it)
             true
         }
 
@@ -139,6 +137,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
         compositeDisposable.dispose()
+    }
+
+    private fun onMapCameraIdle() {
+        setViewLocation()
+    }
+
+    private fun onMapClicked() {
+        toggleBottomSheet()
+        // HACK: This is needed because GoogleMaps removes marker windows when tapping.
+        updateUi(MapViewModel.Event())
+    }
+
+    private fun onMapMarkerClicked(marker: Marker) {
+        progressBar.show()
+        viewModel.selectPoi(marker.position.asLatLongData())
     }
 
     private fun onLocationPermissionDenied() {
@@ -263,9 +276,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             poiImagesRecyclerView.visibility = View.GONE
         }
 
-        if (event is MapViewModel.PoiSelectedEvent) {
-            showBottomSheet()
+        when (event) {
+            is MapViewModel.PoiSelectedEvent -> showBottomSheet()
+            is MapViewModel.PoiInfoLoadedEvent -> progressBar.hide()
         }
+
     }
 
     private fun updateDirectionInfo(event: MapViewModel.Event) {
@@ -285,8 +300,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         directionDistanceValue.text = directions.distance
         directionDurationValue.text = directions.duration
 
-        if (event is MapViewModel.DirectionsRequestedEvent) {
+        if (event is MapViewModel.DirectionsLoadedEvent) {
             showBottomSheet()
+            progressBar.hide()
         }
     }
 
@@ -334,6 +350,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (viewModel.hasDirections()) {
             viewModel.clearDirections()
         } else {
+            progressBar.show()
             viewModel.fetchDirections()
         }
     }

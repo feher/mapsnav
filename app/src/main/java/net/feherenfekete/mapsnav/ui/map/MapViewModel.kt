@@ -46,12 +46,12 @@ class MapViewModel @Inject constructor(
     private var cachedDirectionDestination = LatLongData()
 
     open class Event
-    class NearbyPoisEvent : Event()
-    class DirectionsRequestedEvent : Event()
+    class NearbyPoisLoadedEvent : Event()
+    class DirectionsLoadedEvent : Event()
     class DirectionsClearedEvent : Event()
     class PoiSelectedEvent : Event()
     class PoiUnselectedEvent : Event()
-    class PoiInfoEvent : Event()
+    class PoiInfoLoadedEvent : Event()
 
     private val modelChangedEvent = PublishProcessor.create<Event>()
 
@@ -61,7 +61,7 @@ class MapViewModel @Inject constructor(
                 .observeOn(rxSchedulers.main())
                 .subscribe({
                     currentNearbyPois = it
-                    modelChangedEvent.offer(NearbyPoisEvent())
+                    modelChangedEvent.offer(NearbyPoisLoadedEvent())
                 }, {
                     Timber.e(it)
                 })
@@ -84,7 +84,7 @@ class MapViewModel @Inject constructor(
                 .observeOn(rxSchedulers.main())
                 .subscribe({
                     currentPoiInfo = it
-                    modelChangedEvent.offer(PoiInfoEvent())
+                    modelChangedEvent.offer(PoiInfoLoadedEvent())
                 }, {
                     Timber.e(it)
                 })
@@ -129,7 +129,7 @@ class MapViewModel @Inject constructor(
                 .subscribe({
                     currentDirections = it
                     cachedDirections = it
-                    modelChangedEvent.offer(DirectionsRequestedEvent())
+                    modelChangedEvent.offer(DirectionsLoadedEvent())
                 }, {
                     Timber.e(it)
                 })
