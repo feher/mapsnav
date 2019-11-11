@@ -6,14 +6,14 @@ import com.squareup.moshi.JsonClass
 object ArticleInfoResponse {
 
     @JsonClass(generateAdapter = true)
-    data class Response(val query: QueryResponse)
+    data class Response(val query: QueryResponse = QueryResponse())
 
     @JsonClass(generateAdapter = true)
-    data class QueryResponse(val pages: Map<Long, PageResponse>)
+    data class QueryResponse(val pages: Map<Long, PageResponse> = emptyMap())
 
     @JsonClass(generateAdapter = true)
     data class PageResponse(
-        @Json(name = "pageid") val pageId: Long,
+        @Json(name = "pageid") val pageId: Long = -1,
         @Json(name = "title") val title: String = "",
         @Json(name = "description") val description: String = "",
         @Json(name = "fullurl") val url: String = "",

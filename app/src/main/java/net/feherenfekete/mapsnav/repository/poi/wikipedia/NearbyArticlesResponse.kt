@@ -6,14 +6,14 @@ import com.squareup.moshi.JsonClass
 object NearbyArticlesResponse {
 
     @JsonClass(generateAdapter = true)
-    data class Response(val query: QueryResponse)
+    data class Response(val query: QueryResponse = QueryResponse())
 
     @JsonClass(generateAdapter = true)
-    data class QueryResponse(val geosearch: List<ArticleResponse>)
+    data class QueryResponse(val geosearch: List<ArticleResponse> = emptyList())
 
     @JsonClass(generateAdapter = true)
     data class ArticleResponse(
-        @Json(name = "pageid") val pageId: Long,
+        @Json(name = "pageid") val pageId: Long = -1,
         @Json(name = "title") val title: String = "",
         @Json(name = "lat") val latitude: Double = 0.0,
         @Json(name = "lon") val longitude: Double = 0.0,

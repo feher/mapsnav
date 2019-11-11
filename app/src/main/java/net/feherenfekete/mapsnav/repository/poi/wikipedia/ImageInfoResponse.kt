@@ -6,10 +6,10 @@ import com.squareup.moshi.JsonClass
 object ImageInfoResponse {
 
     @JsonClass(generateAdapter = true)
-    data class Response(val query: QueryResponse)
+    data class Response(val query: QueryResponse = QueryResponse())
 
     @JsonClass(generateAdapter = true)
-    data class QueryResponse(val pages: Map<Long, PageResponse>)
+    data class QueryResponse(val pages: Map<Long, PageResponse> = emptyMap())
 
     @JsonClass(generateAdapter = true)
     data class PageResponse(
