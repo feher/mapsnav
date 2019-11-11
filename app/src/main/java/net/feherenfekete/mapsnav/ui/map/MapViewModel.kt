@@ -45,13 +45,15 @@ class MapViewModel @Inject constructor(
     private var cachedDirectionOrigin = LatLongData()
     private var cachedDirectionDestination = LatLongData()
 
-    open class Event
-    class NearbyPoisLoadedEvent : Event()
-    class DirectionsLoadedEvent : Event()
-    class DirectionsClearedEvent : Event()
-    class PoiSelectedEvent : Event()
-    class PoiUnselectedEvent : Event()
-    class PoiInfoLoadedEvent : Event()
+    sealed class Event {
+        object NearbyPoisLoaded : Event()
+        object DirectionsLoaded : Event()
+        object DirectionsCleared : Event()
+        object PoiSelected : Event()
+        object PoiUnselected : Event()
+        object PoiInfoLoaded : Event()
+        object General: Event()
+    }
 
     private val modelChangedEvent = PublishProcessor.create<Event>()
 
@@ -61,7 +63,7 @@ class MapViewModel @Inject constructor(
                 .observeOn(rxSchedulers.main())
                 .subscribe({
                     currentNearbyPois = it
-                    modelChangedEvent.offer(NearbyPoisLoadedEvent())
+                    modelChangedEvent.offer(Event.NearbyPoisLoaded)
                 }, {
                     Timber.e(it)
                 })
@@ -84,12 +86,12 @@ class MapViewModel @Inject constructor(
                 .observeOn(rxSchedulers.main())
                 .subscribe({
                     currentPoiInfo = it
-                    modelChangedEvent.offer(PoiInfoLoadedEvent())
+                    modelChangedEvent.offer(Event.PoiInfoLoaded)
                 }, {
                     Timber.e(it)
                 })
         )
-        modelChangedEvent.offer(PoiSelectedEvent())
+        modelChangedEvent.offer(Event.PoiSelected)
     }
 
     fun isSelectedPoi(poi: PoiData) = (poi.id == selectedPoi.id)
@@ -98,7 +100,7 @@ class MapViewModel @Inject constructor(
 
     fun clearSelectedPoi() {
         selectedPoi = PoiData()
-        modelChangedEvent.offer(PoiUnselectedEvent())
+        modelChangedEvent.offer(Event.PoiUnselected)
     }
 
     fun poiInfo(poiId: Long) = poiRepository.poiInfo(poiId)
@@ -129,7 +131,7 @@ class MapViewModel @Inject constructor(
                 .subscribe({
                     currentDirections = it
                     cachedDirections = it
-                    modelChangedEvent.offer(DirectionsLoadedEvent())
+                    modelChangedEvent.offer(Event.DirectionsLoaded)
                 }, {
                     Timber.e(it)
                 })
@@ -140,7 +142,7 @@ class MapViewModel @Inject constructor(
 
     fun clearDirections() {
         currentDirections = DirectionData()
-        modelChangedEvent.offer(DirectionsClearedEvent())
+        modelChangedEvent.offer(Event.DirectionsCleared)
     }
 
     private fun getPoi(location: LatLongData) = currentNearbyPois.find {

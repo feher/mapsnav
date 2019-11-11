@@ -146,7 +146,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun onMapClicked() {
         toggleBottomSheet()
         // HACK: This is needed because GoogleMaps removes marker windows when tapping.
-        updateUi(MapViewModel.Event())
+        updateUi(MapViewModel.Event.General)
     }
 
     private fun onMapMarkerClicked(marker: Marker) {
@@ -209,7 +209,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             )
             if (viewModel.isSelectedPoi(it)) {
                 marker.showInfoWindow()
-                if (event is MapViewModel.PoiSelectedEvent) {
+                if (event is MapViewModel.Event.PoiSelected) {
                     map.animateCamera(CameraUpdateFactory.newLatLng(marker.position))
                 }
             }
@@ -277,8 +277,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
 
         when (event) {
-            is MapViewModel.PoiSelectedEvent -> showBottomSheet()
-            is MapViewModel.PoiInfoLoadedEvent -> progressBar.hide()
+            is MapViewModel.Event.PoiSelected -> showBottomSheet()
+            is MapViewModel.Event.PoiInfoLoaded -> progressBar.hide()
         }
 
     }
@@ -300,7 +300,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         directionDistanceValue.text = directions.distance
         directionDurationValue.text = directions.duration
 
-        if (event is MapViewModel.DirectionsLoadedEvent) {
+        if (event is MapViewModel.Event.DirectionsLoaded) {
             showBottomSheet()
             progressBar.hide()
         }
