@@ -25,7 +25,7 @@
         <!-- Unfortunately, this API key cannot be taken from gradle manifestPlaceholders. -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB4StprNYAauA79mD3bJe9xZAWCWfHVimo" />
+            android:value=put-your-api-key-here />
 
     </application>
 
